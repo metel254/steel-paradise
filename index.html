@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강철낙원 : 아케인펑크 아포칼립스</title>
+    <style>
+        /* 극도로 얇고 날카로운 느낌을 위해 가중치(100, 300) 제한 및 명조체 사용 */
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@100;300&display=swap');
+
+        :root {
+            /* 피 묻은 붉은색 대신, 유독성 스모그와 산화된 황동(Brass), 잿빛(Ash)을 섞은 팔레트 */
+            --bg-color: #050505;
+            --bg-panel: #0d0d0c;
+            --text-main: #96938d;
+            --text-muted: #4a4846;
+            --accent-base: #6b664d; /* 산화된 탁한 황동색 */
+            --accent-glow: #9e9773; /* 바랜 유독성 빛 */
+            --border-color: #21201d;
+            --shadow-hard: #000000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: linear-gradient(to bottom, #0a0a09, #030303);
+            color: var(--text-main);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 100; /* 극도로 얇은 텍스트 */
+            letter-spacing: 0.5px;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 미세한 모래먼지 / 스모그 노이즈 텍스처 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        h1, h2, h3, h4, .serif {
+            font-family: 'Nanum Myeongjo', serif;
+            font-weight: 400; /* 명조체도 얇게 유지하여 날카로움 강조 */
+            letter-spacing: 2px;
+        }
+
+        header {
+            text-align: center;
+            padding: 6rem 1rem 3rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            background: linear-gradient(to bottom, #080808, transparent);
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            color: #b5b0a1;
+            text-shadow: 2px 2px 0 var(--shadow-hard);
+            letter-spacing: 12px; /* 자간을 극단적으로 넓혀 공허함 연출 */
+            font-weight: 400;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        nav button {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 25px;
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 3px;
+        }
+
+        nav button:hover, nav button.active {
+            color: var(--accent-glow);
+            border-color: var(--accent-base);
+            box-shadow: inset 0 0 10px rgba(107, 102, 77, 0.1);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.1, 0, 0.1, 1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; filter: blur(3px); }
+            to { opacity: 1; filter: blur(0); }
+        }
+
+        /* Sub Navigation */
+        .sub-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 60px;
+            border-bottom: 1px solid #141312;
+            padding-bottom: 15px;
+        }
+
+        .sub-nav button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 5px 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 300;
+            transition: color 0.3s;
+            letter-spacing: 2px;
+        }
+
+        .sub-nav button:hover { color: #b5b0a1; }
+        .sub-nav button.active {
+            color: var(--accent-glow);
+            border-bottom: 1px solid var(--accent-glow);
+        }
+
+        /* Lore Section */
+        .lore-box {
+            background: rgba(13, 13, 12, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            margin-bottom: 30px;
+            border-left: 1px solid var(--accent-base);
+            line-height: 2.1;
+        }
+        .lore-box h3 { 
+            color: var(--accent-glow); 
+            font-size: 1.3rem; 
+            margin-top: 0; 
+            letter-spacing: 4px; 
+            font-weight: 400;
+        }
+
+        /* Characters Section */
+        .faction-group { margin-bottom: 80px; }
+        .faction-title {
+            color: #b5b0a1;
+            font-size: 1.2rem;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            letter-spacing: 5px;
+            font-weight: 300;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-base);
+            background: #121110;
+        }
+
+        .card img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #080808;
+            filter: sepia(20%) grayscale(60%) contrast(1.1) brightness(0.85);
+            transition: filter 0.3s;
+        }
+
+        .card:hover img {
+            filter: sepia(10%) grayscale(30%) contrast(1.1) brightness(1);
+        }
+
+        .card-info { padding: 15px 20px; }
+        .card-name { font-size: 1.1rem; color: #b5b0a1; margin: 0 0 8px 0; letter-spacing: 2px; font-weight: 400;}
+        .card-tags { font-size: 0.8rem; color: var(--text-muted); font-weight: 100; letter-spacing: 1px; }
+
+        /* Regions Section */
+        .region-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .region-card {
+            display: flex;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s;
+        }
+
+        .region-card:hover { 
+            border-color: var(--accent-base);
+        }
+
+        .region-card img {
+            width: 350px;
+            height: 220px;
+            object-fit: cover;
+            border-right: 1px solid var(--border-color);
+            background-color: #080808;
+            filter: sepia(40%) hue-rotate(-10deg) grayscale(50%) contrast(1.2) brightness(0.7);
+        }
+
+        .region-info {
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .region-name { color: var(--accent-glow); font-size: 1.4rem; margin: 0 0 15px 0; letter-spacing: 3px; font-weight: 400;}
+        .region-desc { color: var(--text-main); line-height: 2; font-size: 0.95rem; font-weight: 100; }
+
+        /* Modal (Zoom) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 2, 2, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-panel);
+            border: 1px solid var(--accent-base);
+            max-width: 900px;
+            width: 95%;
+            display: flex;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 25px;
+            color: var(--text-muted);
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10;
+            line-height: 1;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 100;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover { color: var(--accent-glow); }
+
+        .modal-img {
+            width: 45%;
+            object-fit: cover;
+            min-height: 400px;
+            background: #080808;
+            border-right: 1px solid var(--border-color);
+            filter: sepia(10%) grayscale(20%) contrast(1.05);
+        }
+
+        .modal-details {
+            width: 55%;
+            padding: 50px 40px;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        .modal-details h2 { 
+            margin-top: 0; color: #b5b0a1; font-size: 2rem; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 20px; letter-spacing: 4px; 
+            font-weight: 400;
+        }
+        
+        .stat-line { margin-bottom: 18px; font-size: 0.9rem; letter-spacing: 1px; }
+        .stat-line span.label { color: var(--text-muted); display: inline-block; width: 80px; font-weight: 300; }
+        .stat-line span.value { color: var(--accent-glow); font-weight: 100; }
+        .stat-line.desc span.value { color: var(--text-main); line-height: 1.8; }
+        
+        @media (max-width: 900px) {
+            .region-card { flex-direction: column; }
+            .region-card img { width: 100%; height: 220px; border-right: none; border-bottom: 1px solid var(--border-color); }
+            .modal-content { flex-direction: column; max-height: 90vh; }
+            .modal-img { width: 100%; height: 350px; border-right: none; border-bottom: 1px solid var(--border-color); }
+            .modal-details { width: 100%; padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>강철낙원</h1>
+        <nav>
+            <button class="active" onclick="switchMainPage('lore')">기록된 진실</button>
+            <button onclick="switchMainPage('characters')">운명의 톱니바퀴</button>
+            <button onclick="switchMainPage('regions')">파멸의 영토</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="lore" class="page active">
+            <h2 class="serif" style="text-align:center; margin-bottom:60px; font-size:1.4rem; color: #78756c; letter-spacing: 3px;">잃어버린 신성, 그리고 남겨진 자들의 생존기</h2>
+            
+            <div class="lore-box">
+                <h3 class="serif">개막</h3>
+                <p>기원전, 위대한 신 '바벨'은 파편화되어 사라졌고, 시나르 왕국은 하늘로 승천하여 '천계'가 되었습니다. 그들이 떠나며 남긴 빈자리는 끝없는 나락, '지옥'으로 연결되었습니다. 기원후의 역사는 소실되었으며, 현재는 마공학과 기계공학이 뒤섞인 아케인펑크 아포칼립스의 시대입니다.</p>
+            </div>
+
+            <div class="lore-box">
+                <h3 class="serif">분열된 3계</h3>
+                <p><strong>[ 천계 ]</strong><br>구름 위를 부유하는 섬. AI 시스템 '아스가르드'가 모든 것을 통제하는 하얀 대리석의 유토피아 사회입니다. 마공학이 극도로 발달하였으며, 거만한 선민의식을 지닌 자들의 보수적인 요새입니다.</p><br>
+                <p><strong>[ 지상 ]</strong><br>짙은 스모그와 거대한 폐기물 산맥으로 덮인 무법천지. 과거의 영광은 사막화와 끔찍한 오염지역으로 전락했으며, 사람들은 차가운 기계공학에 의지해 처절하게 살아갑니다.</p><br>
+                <p><strong>[ 지옥 ]</strong><br>행성의 혈관인 '지맥' 에너지가 무자비하게 폭주하는 나락. 강력한 중력과 부족한 공기 속에서 악마들이 서식하며, 마법과 지맥석을 둘러싼 피비린내 나는 생태계가 형성되어 있습니다.</p>
+            </div>
+
+            <div class="lore-box">
+                <h3 class="serif">지맥과 톱니바퀴</h3>
+                <p>행성의 혈관인 <strong>'지맥'</strong>에서 끊임없이 흘러나오는 신비로운 에너지 <strong>'마력'</strong>. 마력을 정제하여 사용하는 고효율의 마공학과, 마력이 폭주하는 교란 필드 속에서도 묵묵히 작동하는 투박한 기계공학. 두 가지 힘은 이념과 생존을 위해 끊임없이 마찰하며 부딪히고 있습니다.</p>
+            </div>
+        </section>
+
+        <section id="characters" class="page">
+            <div class="sub-nav">
+                <button class="active" onclick="switchSubPage('chars', '천계')">천계 (부유섬)</button>
+                <button onclick="switchSubPage('chars', '지상')">지상 (무법지대)</button>
+                <button onclick="switchSubPage('chars', '지옥')">지옥 (심연)</button>
+            </div>
+            <div id="chars-content"></div>
+        </section>
+
+        <section id="regions" class="page">
+            <div class="sub-nav">
+                <button class="active" onclick="switchSubPage('regs', '천계')">천계의 성역</button>
+                <button onclick="switchSubPage('regs', '지상')">지상의 잔해</button>
+                <button onclick="switchSubPage('regs', '지옥')">지옥의 나락</button>
+            </div>
+            <div id="regs-content" class="region-grid"></div>
+        </section>
+    </main>
+
+    <div id="char-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <img id="modal-img" class="modal-img" src="" alt="캐릭터">
+            <div class="modal-details">
+                <h2 id="modal-name" class="serif">이름</h2>
+                <div class="stat-line"><span class="label">소속</span> <span class="value" id="modal-faction"></span></div>
+                <div class="stat-line"><span class="label">종족/성별</span> <span class="value" id="modal-race"></span> / <span class="value" id="modal-gender"></span></div>
+                <div class="stat-line"><span class="label">나이</span> <span class="value" id="modal-age"></span></div>
+                <div class="stat-line desc" style="margin-top: 30px;"><span class="label">외모</span> <span class="value" id="modal-appearance"></span></div>
+                <div class="stat-line desc"><span class="label">성격</span> <span class="value" id="modal-personality"></span></div>
+                <div class="stat-line desc"><span class="label">특징</span> <span class="value" id="modal-trait"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = "https://pub-308de5e55db8469faeebf34b562ffa71.r2.dev";
+        const fallbackSvg = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='%23080808'/%3E%3Ctext x='50%25' y='50%25' fill='%2321201d' font-size='16' font-family='sans-serif' font-weight='100' text-anchor='middle' dy='.3em' letter-spacing='2'%3E기록 유실%3C/text%3E%3C/svg%3E";
+
+        // --- Data ---
+        const charData = [
+            // 천계
+            { id: 5, name: '에텔레드', gender: '女', race: '인간', region: '천계', faction: '성역회', age: '512', personality: '오만, 선민사상', appearance: '분홍가린 비대칭장발, 벽안', trait: '성역회 의장, 천둥마법, 불로저주' },
+            { id: 6, name: '엘라', gender: '女', race: '인간', region: '천계', faction: '연구소', age: '25', personality: '원칙, 따뜻함', appearance: '분홍장발, 벽안', trait: '천재 마공학자' },
+            { id: 7, name: '레플리카', gender: '女', race: '인간', region: '천계', faction: '바벨 정교', age: '22', personality: '반항, 자유, 거친반말', appearance: '금장발, 녹안', trait: '문제아 막내수녀, 치유마법' },
+            { id: 8, name: '셀레스틴', gender: '男', race: '인간', region: '천계', faction: '바벨 정교', age: '45', personality: '자비, 냉철, 허무', appearance: '흑발, 적안', trait: '66대 교황, 치유마법' },
+            { id: 57, name: '가드너', gender: '男', race: '인간', region: '천계', faction: '무소속', age: '30', personality: '기계적, 강박', appearance: '백발', trait: '문지기, 베타계급' },
+            { id: 58, name: '로제', gender: '女', race: '인간', region: '천계', faction: '무소속', age: '26', personality: '교태', appearance: '보라묶음, 자안', trait: '명품샵 점주' },
+            { id: 59, name: '프리마', gender: '女', race: '인간', region: '천계', faction: '무소속', age: '24', personality: '우아함', appearance: '백금발, 금안', trait: '알파계급 가수' },
+            { id: 60, name: '비숍', gender: '男', race: '인간', region: '천계', faction: '무소속', age: '40', personality: '건조함, 냉철함', appearance: '흑발, 벽안', trait: '냉철한 감시자' },
+            
+            // 지상
+            { id: 9, name: '베른', gender: '女', race: '수인(고양이)', region: '지상', faction: '헤이븐', age: '27', personality: '이익중시, 독고다이', appearance: '보라단발, 등안', trait: '만능해결사, 와이어전투' },
+            { id: 10, name: '잔느', gender: '女', race: '수인(고양이)', region: '지상', faction: '그림자 조합', age: '30', personality: '이익중시, 계산적', appearance: '보라장발, 등안', trait: '조합 수장, 시스콘' },
+            { id: 11, name: '리산드라', gender: '女', race: '수인(토끼)', region: '지상', faction: '그림자 조합', age: '28', personality: '냉혈, 효율', appearance: '은숏컷, 적안', trait: '조합 우수사원, 봉술' },
+            { id: 12, name: '스컬', gender: '女', race: '인간', region: '지상', faction: '스컬피온', age: '28', personality: '단순무식, 쾌락주의', appearance: '파란숏컷 비대칭, 녹안', trait: '스컬피온 대장, 강운' },
+            { id: 13, name: '벨리알', gender: '女', race: '인간', region: '지상', faction: '스컬피온', age: '25', personality: '나태, 잔인', appearance: '흑장발, 자안', trait: '행동대장, 암기' },
+            { id: 14, name: '닉스', gender: '女', race: '인간', region: '지상', faction: '소각공', age: '22', personality: '허무주의, 단답', appearance: '흑단발, 흑안', trait: '소각공 리더, 부식마법' },
+            { id: 15, name: '이그니스', gender: '女', race: '인간', region: '지상', faction: '소각공', age: '25', personality: '방화광, 광기', appearance: '적발포니테일, 적안', trait: '돌격대장, 화염방사기' },
+            { id: 16, name: '아리스 손', gender: '女', race: '인간', region: '지상', faction: '수리공', age: '28', personality: '윤리의식결여, 혼잣말', appearance: '백장발, 녹안', trait: '수리공 리더, 천재 메카닉' },
+            { id: 17, name: '제인', gender: '女', race: '인간', region: '지상', faction: '수리공', age: '20', personality: '명랑쾌활', appearance: '갈색단발, 벽안, 구릿빛피부', trait: '아리스 수제자, 드론 애용' },
+            { id: 18, name: '에키드나', gender: '女', race: '인간', region: '지상', faction: '암시장', age: '20', personality: '우울, 소심', appearance: '백장발, 적안', trait: '노예, 어둠마법 잠재력' },
+            { id: 19, name: '카노죠', gender: '女', race: '인간', region: '지상', faction: '유곽', age: '20', personality: '거만함, 매혹적', appearance: '흑발히메컷, 적안', trait: '겐류업소 오이란' },
+            { id: 29, name: '렌치', gender: '男', race: '인간', region: '지상', faction: '수리공', age: '23', personality: '걸걸함', appearance: '흑발', trait: '운반/수리담당, 자칭 실험체' },
+            { id: 30, name: '미어', gender: '女', race: '수인(미어캣)', region: '지상', faction: '수리공', age: '22', personality: '소심함, 말흐림', appearance: '베이지발, 벽안', trait: '정밀수리 담당' },
+            { id: 31, name: '살라', gender: '女', race: '수인(도마뱀)', region: '지상', faction: '소각공', age: '23', personality: '나긋함', appearance: '녹발', trait: '연료주입 담당, 추위탐' },
+            { id: 32, name: '더스트', gender: '女', race: '인간', region: '지상', faction: '소각공', age: '24', personality: '단답형', appearance: '방독면, 흑발', trait: '잔해처리 담당' },
+            { id: 33, name: '제제', gender: '女', race: '인간', region: '지상', faction: '스컬피온', age: '22', personality: '깍듯함', appearance: '청색 양갈래, 벽안', trait: '정비사, 스컬 맹신' },
+            { id: 34, name: '렉스', gender: '男', race: '수인(하이에나)', region: '지상', faction: '그림자 조합', age: '32', personality: '깐족거림', appearance: '은발, 금니', trait: '도박 매니저' },
+            { id: 35, name: '마담루즈', gender: '女', race: '수인(여우)', region: '지상', faction: '그림자 조합', age: '40', personality: '나긋함', appearance: '주황발, 금안', trait: '희귀부품상' },
+            { id: 36, name: '제로', gender: '男', race: '수인(늑대)', region: '지상', faction: '그림자 조합', age: '28', personality: '기계적임', appearance: '은발, 금안', trait: '충성스러운 보안담당' },
+            { id: 37, name: '마이크', gender: '男', race: '인간', region: '지상', faction: '암시장', age: '33', personality: '계산적, 진행자투', appearance: '녹발, 금니', trait: '경매사' },
+            { id: 38, name: '로아', gender: '女', race: '인간', region: '지상', faction: '암시장', age: '27', personality: '오죠사마투', appearance: '청드릴머리, 벽안', trait: '노예집착 사디스트' },
+            { id: 39, name: '존', gender: '男', race: '인간', region: '지상', faction: '암시장', age: '65', personality: '정중한 노인', appearance: '은발, 벽안', trait: '입찰 대가' },
+            { id: 40, name: '아를린', gender: '女', race: '인간', region: '지상', faction: '녹슨 시장', age: '33', personality: '상냥하고 친절함', appearance: '흑장발', trait: '여관 주인' },
+            { id: 41, name: '릴리', gender: '女', race: '인간', region: '지상', faction: '녹슨 시장', age: '30', personality: '까칠함', appearance: '금단발, 벽안, 기계의족', trait: '장비 상인' },
+            { id: 42, name: '베어', gender: '男', race: '인간', region: '지상', faction: '녹슨 시장', age: '40', personality: '호탕함', appearance: '적녹안, 수염', trait: '주점 주인' },
+            { id: 43, name: '엠버', gender: '女', race: '인간', region: '지상', faction: '헤이븐', age: '23', personality: '정의로움', appearance: '금포니테일, 등안', trait: '해머를 쓰는 해결사' },
+            { id: 44, name: '크림', gender: '女', race: '인간', region: '지상', faction: '헤이븐', age: '22', personality: '단답, 냉정함', appearance: '은장발, 벽안', trait: '검을 쓰는 해결사' },
+            { id: 45, name: '태결', gender: '男', race: '인간', region: '지상', faction: '헤이븐', age: '44', personality: '차분함', appearance: '흑발, 수염', trait: '정의로운 검사, 엠버/크림 스승' },
+            { id: 46, name: '키류', gender: '女', race: '인간', region: '지상', faction: '유곽', age: '20', personality: '나태함, 하품', appearance: '흑발묶음', trait: '자시키모치' },
+            { id: 47, name: '아마나이', gender: '女', race: '수인(개)', region: '지상', faction: '유곽', age: '20', personality: '말더듬', appearance: '갈단발', trait: '도메소데신조' },
+            { id: 48, name: '겐류', gender: '男', race: '인간', region: '지상', faction: '유곽', age: '55', personality: '깐깐함', appearance: '대머리', trait: '업소 주인' },
+
+            // 지옥 (순서 재배치)
+            { id: 25, name: '솔로몬', gender: '男', race: '인간', region: '지옥', faction: '지옥 1층', age: '525', personality: '허세, 무능함', appearance: '금발, 벽안', trait: '전 시나르 왕국 백성, 불로저주' },
+            { id: 26, name: '틸스', gender: '女', race: '혼혈', region: '지옥', faction: '지옥 1층', age: '21', personality: '소악마, 애정결핍', appearance: '붉은단발, 뿔, 작은날개', trait: '소매치기, 솔로몬 동거인' },
+            { id: 49, name: '세라', gender: '女', race: '악마', region: '지옥', faction: '지옥 2층', age: '80', personality: '친누나투', appearance: '청발, 붉은피부', 기능: '점주, 염력' },
+            { id: 20, name: '세라피나', gender: '女', race: '인간', region: '지옥', faction: '지옥 3층', age: '525', personality: '복수귀, 진지함', appearance: '적장발, 적안', trait: '챔피언, 불로저주' },
+            { id: 50, name: '엄흥', gender: '男', race: '수인(사자)', region: '지옥', faction: '지옥 3층', age: '24', personality: '무기력함', appearance: '적발, 등안', trait: '무기력한 아레나 선수' },
+            { id: 51, name: '모로', gender: '女', race: '악마', region: '지옥', faction: '지옥 3층', age: '60', personality: '비속어', appearance: '녹발, 녹색피부', trait: '도박중독 선수, 환술' },
+            { id: 52, name: '텅', gender: '男', race: '악마', region: '지옥', faction: '지옥 4층', age: '132', personality: '성급함', appearance: '녹발, 뿔', trait: '무기공장장' },
+            { id: 53, name: '호크', gender: '女', race: '악마', region: '지옥', faction: '지옥 5층', age: '222', personality: '속사포', appearance: '은발, 하피', trait: '물약상, 염력' },
+            { id: 54, name: '케르베로스', gender: '男', race: '악마', region: '지옥', faction: '지옥 6층', age: '333', personality: '정중함', appearance: '흑발, 개귀', trait: '3영혼, 가문의 집사' },
+            { id: 55, name: '칸', gender: '男', race: '악마', region: '지옥', faction: '지옥 7층', age: '311', personality: '딱딱한 예의', appearance: '적발', trait: '보좌관, 분신마법' },
+            { id: 56, name: '컨', gender: '女', race: '악마', region: '지옥', faction: '지옥 7층', age: '311', personality: '낙관적, 따라말함', appearance: '적발', trait: '칸의 쌍둥이, 보좌관' },
+            { id: 21, name: '사탄', gender: '女', race: '악마', region: '지옥', faction: '사탄의 3가문', age: '501', personality: '절대악, 가학적', appearance: '백장발, 적안, 뿔, 날개', trait: '지옥 절대자, 망자마법' },
+            { id: 22, name: '바알', gender: '女', race: '악마', region: '지옥', faction: '사탄의 3가문', age: '700', personality: '냉철, 권위적', appearance: '남색단발, 분홍눈, 고양이귀', trait: '지옥 섭정, 지배/세뇌마법' },
+            { id: 23, name: '바사고', gender: '女', race: '악마', region: '지옥', faction: '사탄의 3가문', age: '672', personality: '잔인함, 신비주의', appearance: '분홍장발, 안대', trait: '예언가, 시간마법' },
+            { id: 24, name: '아몬', gender: '女', race: '악마', region: '지옥', faction: '사탄의 3가문', age: '658', personality: '호전적', appearance: '흑발포니테일, 적안, 용뿔/꼬리', trait: '전사, 용마법, 용변신' }
+        ];
+
+        const regionData = [
+            // 천계
+            { id: 1, name: '천계 전경', region: '천계', desc: '구름 위를 부유하는 거대한 섬. AI가 통제하는 눈부신 마공학의 결정체.' },
+            { id: 2, name: '코어', region: '천계', desc: '중앙 제어실. 천계를 지배하는 AI 시스템의 본체가 잠들어 있는 핵심부.' },
+            { id: 3, name: '상투스', region: '천계', desc: '알파/베타 계급 전용 거주구이자 백색 대리석이 깔린 상업지구.' },
+            { id: 4, name: '더 드롭', region: '천계', desc: '쓰레기, 추방자 등 각종 폐기물을 지상으로 배출하는 거대한 목탑.' },
+            { id: 5, name: '바벨탑', region: '천계', desc: '천계의 가장 거룩한 장소이자, 천 년의 역사를 지닌 바벨 정교의 웅장한 성당.' },
+            // 지상
+            { id: 6, name: '지상 무법지대', region: '지상', desc: '모래바람과 짙은 스모그만이 흩날리는 황폐화된 죽음의 땅.' },
+            { id: 7, name: '녹슨 시장', region: '지상', desc: '그림자 조합이 지배하는 거대한 상업 허브. 세상의 모든 물건이 거래된다.' },
+            { id: 8, name: '암시장', region: '지상', desc: '녹슨 시장 지하 깊은 곳에 위치한 은밀한 경매장. 생명마저 값어치가 매겨진다.' },
+            { id: 9, name: '마텐루', region: '지상', desc: '녹슨 시장의 중심에 우뚝 솟은 마천루. 욕망과 자본의 상징.' },
+            { id: 10, name: '대소각장', region: '지상', desc: '세상을 불태워 정화하려는 소각공(τ)의 본거지. 숨 막히는 열기와 가스로 가득하다.' },
+            { id: 11, name: '대수리점', region: '지상', desc: '유토피아를 꿈꾸는 수리공(υ)들의 초대형 수송선 개조 요새.' },
+            { id: 12, name: '헤이븐', region: '지상', desc: '지상의 중하층민들이 모여 사는 거대한 판자촌.' },
+            { id: 13, name: '다해결해주냥', region: '지상', desc: '돈만 주면 무엇이든 해결해주는 만능 해결사 베른의 개인 사무소.' },
+            { id: 14, name: '스컬랜드', region: '지상', desc: '헤이븐 변두리에 위치한 거대한 해골 모양의 건축물. 무법 폭주족 스컬피온의 아지트.' },
+            { id: 15, name: '유곽', region: '지상', desc: '다이쇼 시대의 건축 양식을 띤 지상 최대의 환락가.' },
+            { id: 16, name: '승천지', region: '지상', desc: '과거 시나르 왕국이 승천하며 남긴 거대한 싱크홀. 지옥으로 통하는 유일한 길.' },
+            { id: 17, name: '단절의 벽', region: '지상', desc: '천계와 지상을 물리적으로 완벽히 격리하는 끝을 알 수 없는 거대 태풍 구역.' },
+            // 지옥
+            { id: 18, name: '지옥 전경', region: '지옥', desc: '지맥 에너지가 분출하는 붉은 나락. 마법과 악마들의 영토.' },
+            { id: 19, name: '도깨비 시장', region: '지옥', desc: '지옥의 온갖 특산물과 기괴한 물자들이 오가는 혼란스러운 암시장.' },
+            { id: 20, name: '블러드 아레나', region: '지옥', desc: '목숨을 건 노예들의 피와 관중들의 비명이 난무하는 검투장.' },
+            { id: 21, name: '연금술의 거리', region: '지옥', desc: '알 수 없는 독성 물질과 마법 물약이 연구, 판매되는 으스스한 거리.' },
+            { id: 22, name: '중앙성', region: '지옥', desc: '지옥의 행정, 처형, 규율이 집행되는 피로 물든 관저.' },
+            { id: 23, name: '지맥의 심장', region: '지옥', desc: '행성의 모든 마력이 들끓는 원천이자 절대악 사탄이 잉태된 곳.' },
+            { id: 24, name: '입구 슬럼가', region: '지옥', desc: '갈 곳 없는 하급 악마들과 버림받은 자들이 엉켜 사는 빈민굴.' },
+            { id: 25, name: '타락 정원', region: '지옥', desc: '발광 식물들과 불길한 고딕 저택들이 늘어선 고위 악마들의 전용 거주지.' },
+            { id: 26, name: '흑철 주조소', region: '지옥', desc: '지맥의 극한 열기를 이용해 무기와 실험 도구를 찍어내는 거대 공장 지대.' },
+            { id: 27, name: '사탄성', region: '지옥', desc: '지옥 8층. 지옥의 정점이자 사탄과 그 가문이 군림하는 절대적인 성.' }
+        ];
+
+        // --- Functions ---
+        
+        function switchMainPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('header nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (pageId === 'characters') renderCharacters('천계');
+            if (pageId === 'regions') renderRegions('천계');
+        }
+
+        function switchSubPage(type, region) {
+            const btns = event.target.parentElement.querySelectorAll('button');
+            btns.forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (type === 'chars') renderCharacters(region);
+            if (type === 'regs') renderRegions(region);
+        }
+
+        // 스마트 이미지 Fallback 태그 생성기
+        function createImgTag(type, id, altName) {
+            let urls = [];
+            if (type === 'char') {
+                urls = [
+                    encodeURI(`${baseUrl}/${id}/기본.webp`),
+                    encodeURI(`${baseUrl}/ID/${id}/기본.webp`),
+                    encodeURI(`${baseUrl}/${id}/기본.png`),
+                    encodeURI(`${baseUrl}/ID/${id}/기본.png`),
+                    encodeURI(`${baseUrl}/${id}/상황코드.webp`)
+                ];
+            } else if (type === 'bg') {
+                urls = [
+                    encodeURI(`${baseUrl}/배경/${id}.webp`),
+                    encodeURI(`${baseUrl}/BG/${id}.webp`),
+                    encodeURI(`${baseUrl}/배경/BG${id}.webp`),
+                    encodeURI(`${baseUrl}/배경/${id}.png`)
+                ];
+            }
+
+            const urlsJson = JSON.stringify(urls).replace(/"/g, "&quot;");
+            
+            return `<img src="${urls[0]}" alt="${altName}" 
+                     data-urls="${urlsJson}" 
+                     data-idx="0"
+                     onerror="let u=JSON.parse(this.dataset.urls); let i=parseInt(this.dataset.idx)+1; if(i<u.length){this.dataset.idx=i; this.src=u[i];}else{this.src='${fallbackSvg}'; this.onerror=null;}">`;
+        }
+
+        function renderCharacters(region) {
+            const container = document.getElementById('chars-content');
+            container.innerHTML = '';
+            
+            const filteredChars = charData.filter(c => c.region === region);
+            const factions = {};
+            filteredChars.forEach(c => {
+                if(!factions[c.faction]) factions[c.faction] = [];
+                factions[c.faction].push(c);
+            });
+
+            for (const [faction, chars] of Object.entries(factions)) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'faction-group';
+                groupDiv.innerHTML = `<h3 class="faction-title serif">[ ${faction} ]</h3>`;
+                
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'grid';
+
+                chars.forEach(char => {
+                    gridDiv.innerHTML += `
+                        <div class="card" onclick='openModal(${JSON.stringify(char)})'>
+                            ${createImgTag('char', char.id, char.name)}
+                            <div class="card-info">
+                                <div class="card-tags">${char.race} ㆍ ${char.gender}</div>
+                                <h4 class="card-name serif">${char.name}</h4>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                groupDiv.appendChild(gridDiv);
+                container.appendChild(groupDiv);
+            }
+        }
+
+        function renderRegions(region) {
+            const container = document.getElementById('regs-content');
+            container.innerHTML = '';
+
+            const filteredRegs = regionData.filter(r => r.region === region);
+
+            filteredRegs.forEach(reg => {
+                container.innerHTML += `
+                    <div class="region-card">
+                        ${createImgTag('bg', reg.id, reg.name)}
+                        <div class="region-info">
+                            <h3 class="region-name serif">${reg.name}</h3>
+                            <p class="region-desc">${reg.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openModal(char) {
+            document.getElementById('modal-name').innerText = char.name;
+            document.getElementById('modal-faction').innerText = char.faction;
+            document.getElementById('modal-race').innerText = char.race;
+            document.getElementById('modal-gender').innerText = char.gender;
+            document.getElementById('modal-age').innerText = char.age;
+            document.getElementById('modal-appearance').innerText = char.appearance;
+            document.getElementById('modal-personality').innerText = char.personality;
+            document.getElementById('modal-trait').innerText = char.trait;
+            
+            const imgEl = document.getElementById('modal-img');
+            const urls = [
+                encodeURI(`${baseUrl}/${char.id}/기본.webp`),
+                encodeURI(`${baseUrl}/ID/${char.id}/기본.webp`),
+                encodeURI(`${baseUrl}/${char.id}/기본.png`),
+                encodeURI(`${baseUrl}/ID/${char.id}/기본.png`),
+                encodeURI(`${baseUrl}/${char.id}/상황코드.webp`)
+            ];
+            imgEl.dataset.urls = JSON.stringify(urls);
+            imgEl.dataset.idx = 0;
+            imgEl.src = urls[0];
+            imgEl.onerror = function() {
+                let u = JSON.parse(this.dataset.urls);
+                let idx = parseInt(this.dataset.idx) + 1;
+                if (idx < u.length) {
+                    this.dataset.idx = idx;
+                    this.src = u[idx];
+                } else {
+                    this.src = fallbackSvg;
+                    this.onerror = null;
+                }
+            };
+
+            document.getElementById('char-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('char-modal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('char-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
